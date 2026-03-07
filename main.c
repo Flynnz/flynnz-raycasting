@@ -49,8 +49,8 @@ int main(void)
 	p.pos.y = startPos.y;
 	p.dir.x = 0;
 	p.dir.y = 1;
-	p.speed.x = 0.1;
-	p.speed.y = 0.1;
+	p.speed.x = 0.05;
+	p.speed.y = 0.05;
 	p.rotSpeed = 0.02;
 
 	//-----------------------
@@ -79,7 +79,7 @@ int main(void)
 		
 		//movement
 		if (keystate[SDL_SCANCODE_W])
-		{
+		{	//refactor with raycasting collision detection and vector sum function in the future !!!
 			if (worldMap[(int)(p.pos.y + p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += p.dir.y * p.speed.y; }
 			if (worldMap[(int)p.pos.y][(int)(p.pos.x + p.dir.x * p.speed.x)] == 0) { p.pos.x += p.dir.x * p.speed.x; }
 
@@ -103,11 +103,11 @@ int main(void)
 
 		}
 
-		//rotation
+		//camera rotation
 		if (keystate[SDL_SCANCODE_LEFT])
-			RotationMatrix(&(p.dir), p.rotSpeed);
+			RotateMatrix(&(p.dir), p.rotSpeed);
 		if (keystate[SDL_SCANCODE_RIGHT])
-			RotationMatrix(&(p.dir), -p.rotSpeed);
+			RotateMatrix(&(p.dir), -p.rotSpeed);
 
 		SDL_RenderPresent(renderer);
 	}

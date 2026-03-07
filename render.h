@@ -46,6 +46,11 @@ void RenderCell(SDL_Renderer* renderer, int row, int col, SDL_Color border, SDL_
 void RenderMap(SDL_Renderer* renderer);
 void RenderPlayerBody(SDL_Renderer* renderer, Player* p);
 void RenderDirection(SDL_Renderer* renderer, Player* p);
-void RotationMatrix(fVector* dir, float angle);
+void RotateMatrix(fVector* dir, float angle);
+fVector AddVectors(fVector a, fVector b);
+fVector scaleVector(fVector v, float scale);
+fVector RotationMatrix(fVector dir, float angle);
+fVector perpVectorClockwise(fVector v);
+fVector perpVectorCounterClockwise(fVector v);
 
 #endif 

@@ -1,4 +1,5 @@
 #include "render.h"
+#define PI 3.14159265
 
 SDL_Color SAD_GRAY = { 85, 85, 90, 255 };
 SDL_Color LIGHT_GRAY = { 95, 95, 95, 255 };
@@ -74,21 +75,69 @@ void RenderDirection(SDL_Renderer* renderer, Player* p)
 	start.y = p->pos.y * mapToScreenY;
 	end.x = start.x + p->dir.x * mapToScreenX * 3;
 	end.y = start.y + p->dir.y * mapToScreenY * 3;
-	fVector arrowTipLenght;
-	arrowTipLenght.x = 5;
-	arrowTipLenght.y = 5;
+
+	float tipLenght;
+	tipLenght = (float)1 / 3 * mapToScreenX;
+	fVector tipDir = RotationMatrix(p->dir, PI/4);
+	fVector tipVector = scaleVector(tipDir, -1 * tipLenght);
+	fVector tipEnd1 = AddVectors(end, tipVector);
+	fVector tipEnd2 = AddVectors(end, perpVectorCounterClockwise(tipVector));
 
 	SetRenderColor(renderer, FIRE_RED);
 
+	//arrow body
 	SDL_RenderLine(renderer, start.x, start.y, end.x, end.y);
-	SDL_RenderLine(renderer, end.x, end.y, end.x - arrowTipLenght.x, end.y - arrowTipLenght.y);
-	SDL_RenderLine(renderer, end.x, end.y, end.x + arrowTipLenght.x, end.y - arrowTipLenght.y);
+
+	//arrow tip
+	SDL_RenderLine(renderer, end.x, end.y, tipEnd1.x, tipEnd1.y);
+	SDL_RenderLine(renderer, end.x, end.y, tipEnd2.x, tipEnd2.y);
 }
 
-void RotationMatrix(fVector *dir, float angle)
+void RotateMatrix(fVector *dir, float angle)
 {
 	float oldDirX = dir->x;
 	float oldDirY = dir->y;
 	dir->x = oldDirX * cos(angle) - oldDirY * sin(angle);
 	dir->y = oldDirX * sin(angle) + oldDirY * cos(angle);
 }
+
+fVector RotationMatrix(fVector dir, float angle)
+{
+	fVector result;
+	result.x = dir.x * cos(angle) - dir.y * sin(angle);
+	result.y = dir.x * sin(angle) + dir.y * cos(angle);
+	return result;
+}
+
+fVector AddVectors(fVector a, fVector b)
+{
+	fVector result;
+	result.x = a.x + b.x;
+	result.y = a.y + b.y;
+	return result;
+}
+
+fVector scaleVector(fVector v, float scale)
+{
+	fVector result;
+	result.x = v.x * scale;
+	result.y = v.y * scale;
+	return result;
+}
+
+fVector perpVectorClockwise(fVector v)
+{
+	fVector result;
+	result.x = -v.y;
+	result.y = v.x;
+	return result;
+}
+
+fVector perpVectorCounterClockwise(fVector v)
+{
+	fVector result;
+	result.x = v.y;
+	result.y = -v.x;
+	return result;
+}
+
