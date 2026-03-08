@@ -45,13 +45,14 @@ int main(void)
 	
 	Player p;
 	p.color = WEIRD_BLACK;
-	p.pos.x = startPos.x;
-	p.pos.y = startPos.y;
+	p.pos.x = (float)startPos.x;
+	p.pos.y = (float)startPos.y;
 	p.dir.x = 0;
 	p.dir.y = 1;
-	p.speed.x = 0.05;
-	p.speed.y = 0.05;
-	p.rotSpeed = 0.02;
+	p.speed.x = (float)0.05;
+	p.speed.y = (float)0.05;
+	p.rotSpeed = (float)0.02;
+	p.camera = perpVectorClockwise(p.dir);
 
 	//-----------------------
 	//       Main loop
@@ -62,8 +63,10 @@ int main(void)
 		SDL_RenderClear(renderer);
 		RenderMap(renderer);
 
-		RenderDirection(renderer, &p);
-		RenderPlayerBody(renderer, &p);
+		if (gridState == showGrid)
+			RenderGridOverlap(renderer, &p);
+		RenderPlayer(renderer, &p);
+		RenderCamera(renderer, &p);
 		
 		//event inputs
 		SDL_PollEvent(&event);
@@ -92,22 +95,28 @@ int main(void)
 		}
 		if (keystate[SDL_SCANCODE_D])
 		{
+			if (worldMap[(int)(p.pos.y - p.dir.x * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += -p.dir.x * p.speed.y; }
 			if (worldMap[(int)p.pos.y][(int)(p.pos.x - p.dir.y * p.speed.x)] == 0) { p.pos.x += -p.dir.y * p.speed.x; }
-			if (worldMap[(int)(p.pos.y - p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += -p.dir.x * p.speed.y; }
 
 		}
 		if (keystate[SDL_SCANCODE_A])
 		{
+			if (worldMap[(int)(p.pos.y + p.dir.x * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y -= -p.dir.x * p.speed.y; }
 			if (worldMap[(int)p.pos.y][(int)(p.pos.x + p.dir.y * p.speed.x)] == 0) { p.pos.x -= -p.dir.y * p.speed.x; }
-			if (worldMap[(int)(p.pos.y + p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y -= -p.dir.x * p.speed.y; }
 
 		}
 
 		//camera rotation
 		if (keystate[SDL_SCANCODE_LEFT])
+		{
 			RotateMatrix(&(p.dir), p.rotSpeed);
+			RotateMatrix(&(p.camera), p.rotSpeed);
+		}
 		if (keystate[SDL_SCANCODE_RIGHT])
+		{
 			RotateMatrix(&(p.dir), -p.rotSpeed);
+			RotateMatrix(&(p.camera), -p.rotSpeed);
+		}
 
 		SDL_RenderPresent(renderer);
 	}
