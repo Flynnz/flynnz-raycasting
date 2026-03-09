@@ -62,7 +62,6 @@ void RenderCell(SDL_Renderer* renderer, int row, int col, SDL_Color border, SDL_
 
 void RenderPlayer(SDL_Renderer* renderer, Player* p)
 {
-	RenderLaser(renderer, p);
 	RenderDirection(renderer, p);
 	RenderPlayerBody(renderer, p);
 }
@@ -147,22 +146,26 @@ void RenderCamera(SDL_Renderer* renderer, Player* p)
 	SDL_RenderLine(renderer, dirEnd.x, dirEnd.y, cameraEnd2.x, cameraEnd2.y);
 }
 
+void HighlightCell(SDL_Renderer* renderer, SDL_FRect cell, SDL_Color inside, SDL_Color border)
+{
+	SetRenderColor(renderer, inside);
+	SDL_RenderFillRect(renderer, &cell);
+	SetRenderColor(renderer, border);
+	SDL_RenderRect(renderer, &cell);
+}
+
 void RenderGridOverlap(SDL_Renderer *renderer, Player *p)
 {
-	//player (!refactor this part into "HighLightCell()")
+	//player
 	SDL_FRect playerCell;
 	playerCell.w = mapToScreenX;
 	playerCell.h = mapToScreenY;
 	playerCell.x = (int)(p->pos.x) * mapToScreenX;
 	playerCell.y = (int)(p->pos.y) * mapToScreenY;
-
-	SetRenderColor(renderer, GHOST_GRAY);
-	SDL_RenderFillRect(renderer, &playerCell);
-	SetRenderColor(renderer, SAD_GRAY);
-	SDL_RenderRect(renderer, &playerCell);
+	HighlightCell(renderer, playerCell, ROT_GREEN, SAD_GRAY);
 
 	//laser (DDA)
-	//...
+	DDA(p->dir, *p, renderer);
 }
 
 void RotateMatrix(fVector *dir, float angle)
@@ -182,21 +185,53 @@ fVector RotationMatrix(fVector dir, float angle)
 }
 
 
-void DDA(fVector ray, fVector rayDir, Player p)
+void DDA(fVector rayDir, Player p, SDL_Renderer* renderer)
 {
-	int step = 1;
-	iVector playerCell = { (int)p.pos.x, (int)p.pos.y };
-	float deltaX = rayDir.x == 0 ? 1e30 : rayDir.y / rayDir.x;
-	float deltaY = rayDir.y == 0 ? 1e30 : rayDir.x / rayDir.y;
+	int stepX = -1, stepY = -1;
+	iVector currCell = { (int)p.pos.x, (int)p.pos.y };
+	float deltaX = rayDir.x == 0 ? (float)1e30 : (float)fabs(1.0f / rayDir.x);
+	float deltaY = rayDir.y == 0 ? (float)1e30 : (float)fabs(1.0f / rayDir.y);
 
-	//find sideDistX and Y
-	float sideDistX = fabs(playerCell.x - p.pos.x) * deltaX;
-	float sideDistY = fabs(playerCell.y - p.pos.y) * deltaY;
-	
-	if (p.dir.x > 0)
-		sideDistX += deltaX;
-	if (p.dir.y > 0)
-		sideDistY += deltaY;
+	float distToNextX = rayDir.x < 0
+		? (p.pos.x - currCell.x) * deltaX
+		: (currCell.x + 1.0f - p.pos.x) * deltaX;
+
+	float distToNextY = rayDir.y < 0
+		? (p.pos.y - currCell.y) * deltaY
+		: (currCell.y + 1.0f - p.pos.y) * deltaY;
+
+	if (rayDir.x > 0) stepX = 1;
+	if (rayDir.y > 0) stepY = 1;
+
+	//DDA starts
+	bool hit = false;
+	while (!hit)
+	{
+		if (distToNextX < distToNextY)
+		{
+			distToNextX += deltaX;
+			currCell.x += stepX;
+		}
+		else
+		{
+			distToNextY += deltaY;
+			currCell.y += stepY;
+		}
+
+		SDL_FRect rayCell;
+		rayCell.w = mapToScreenX;
+		rayCell.h = mapToScreenY;
+		rayCell.x = (int)(currCell.x) * mapToScreenX;
+		rayCell.y = (int)(currCell.y) * mapToScreenY;
+
+		HighlightCell(renderer, rayCell, GHOST_GRAY, SAD_GRAY);
+
+		if (worldMap[currCell.y][currCell.x] != 0)
+		{
+			hit = true;
+			HighlightCell(renderer, rayCell, FIRE_RED, ROT_GREEN);
+		}
+	}
 
 }
 

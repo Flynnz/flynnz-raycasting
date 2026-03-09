@@ -64,12 +64,16 @@ int main(void)
 	while (!done)
 	{
 		SDL_RenderClear(renderer);
-		RenderMap(renderer);
 
+		RenderMap(renderer);
 		if (gridState == showGrid)
+		{
 			RenderGridOverlap(renderer, &p);
+			RenderCamera(renderer, &p);
+			RenderLaser(renderer, &p);
+		}
 		RenderPlayer(renderer, &p);
-		RenderCamera(renderer, &p);
+
 		
 		//event inputs
 		SDL_PollEvent(&event);
@@ -85,7 +89,7 @@ int main(void)
 		
 		//movement
 		if (keystate[SDL_SCANCODE_W])
-		{	//refactor with raycasting collision detection and vector sum function in the future !!!
+		{	//refactor with raycasting collision detection and vector sum functions in the future !!!
 			if (worldMap[(int)(p.pos.y + p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += p.dir.y * p.speed.y; }
 			if (worldMap[(int)p.pos.y][(int)(p.pos.x + p.dir.x * p.speed.x)] == 0) { p.pos.x += p.dir.x * p.speed.x; }
 
