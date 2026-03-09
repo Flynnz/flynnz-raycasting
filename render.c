@@ -149,7 +149,7 @@ void RenderCamera(SDL_Renderer* renderer, Player* p)
 
 void RenderGridOverlap(SDL_Renderer *renderer, Player *p)
 {
-	//player
+	//player (!refactor this part into "HighLightCell()")
 	SDL_FRect playerCell;
 	playerCell.w = mapToScreenX;
 	playerCell.h = mapToScreenY;
@@ -179,6 +179,25 @@ fVector RotationMatrix(fVector dir, float angle)
 	result.x = (float)(dir.x * cos(angle) - dir.y * sin(angle));
 	result.y = (float)(dir.x * sin(angle) + dir.y * cos(angle));
 	return result;
+}
+
+
+void DDA(fVector ray, fVector rayDir, Player p)
+{
+	int step = 1;
+	iVector playerCell = { (int)p.pos.x, (int)p.pos.y };
+	float deltaX = rayDir.x == 0 ? 1e30 : rayDir.y / rayDir.x;
+	float deltaY = rayDir.y == 0 ? 1e30 : rayDir.x / rayDir.y;
+
+	//find sideDistX and Y
+	float sideDistX = fabs(playerCell.x - p.pos.x) * deltaX;
+	float sideDistY = fabs(playerCell.y - p.pos.y) * deltaY;
+	
+	if (p.dir.x > 0)
+		sideDistX += deltaX;
+	if (p.dir.y > 0)
+		sideDistY += deltaY;
+
 }
 
 //Vector operations
