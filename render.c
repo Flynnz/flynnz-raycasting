@@ -16,6 +16,25 @@ int gridState = showGrid;
 float mapToScreenX = (float)SCREENWIDTH / MAPWIDTH;
 float mapToScreenY = (float)SCREENHEIGHT/ MAPHEIGHT;
 
+Player InitPlayer(SDL_Color color, iVector startPos, fVector dir, float speed, float rotSpeed)
+{
+	Player p;
+	p.color = color;
+	p.pos.x = (float)startPos.x;
+	p.pos.y = (float)startPos.y;
+
+	p.dir.x = dir.x;
+	p.dir.y = dir.y;
+
+	p.speed.x = speed;
+	p.speed.y = speed;
+	p.rotSpeed = rotSpeed;
+
+	p.camera = perpVectorClockwise(p.dir);
+
+	return p;
+}
+
 void RenderBackground(SDL_Renderer* renderer)
 {
 	SetRenderColor(renderer, WEIRD_BLACK);
@@ -174,6 +193,44 @@ void RotateMatrix(fVector *dir, float angle)
 	float oldDirY = dir->y;
 	dir->x = (float)(oldDirX * cos(angle) - oldDirY * sin(angle));
 	dir->y = (float)(oldDirX * sin(angle) + oldDirY * cos(angle));
+}
+
+void HandlePlayerMovement(bool* keystate, Player* p)
+{
+	if (keystate[SDL_SCANCODE_W])
+	{
+		if (worldMap[(int)(p->pos.y + p->dir.y * p->speed.y)][(int)p->pos.x] == 0) { p->pos.y += p->dir.y * p->speed.y; }
+		if (worldMap[(int)p->pos.y][(int)(p->pos.x + p->dir.x * p->speed.x)] == 0) { p->pos.x += p->dir.x * p->speed.x; }
+	}
+	if (keystate[SDL_SCANCODE_S])
+	{
+		if (worldMap[(int)(p->pos.y - p->dir.y * p->speed.y)][(int)p->pos.x] == 0) { p->pos.y -= p->dir.y * p->speed.y; }
+		if (worldMap[(int)p->pos.y][(int)(p->pos.x - p->dir.x * p->speed.x)] == 0) { p->pos.x -= p->dir.x * p->speed.x; }
+	}
+	if (keystate[SDL_SCANCODE_D])
+	{
+		if (worldMap[(int)(p->pos.y - p->dir.x * p->speed.y)][(int)p->pos.x] == 0) { p->pos.y += -p->dir.x * p->speed.y; }
+		if (worldMap[(int)p->pos.y][(int)(p->pos.x - p->dir.y * p->speed.x)] == 0) { p->pos.x += -p->dir.y * p->speed.x; }
+	}
+	if (keystate[SDL_SCANCODE_A])
+	{
+		if (worldMap[(int)(p->pos.y + p->dir.x * p->speed.y)][(int)p->pos.x] == 0) { p->pos.y -= -p->dir.x * p->speed.y; }
+		if (worldMap[(int)p->pos.y][(int)(p->pos.x + p->dir.y * p->speed.x)] == 0) { p->pos.x -= -p->dir.y * p->speed.x; }
+	}
+}
+
+void HandleRotation(bool* keystate, Player* p)
+{
+	if (keystate[SDL_SCANCODE_LEFT])
+	{
+		RotateMatrix(&(p->dir), p->rotSpeed);
+		RotateMatrix(&(p->camera), p->rotSpeed);
+	}
+	if (keystate[SDL_SCANCODE_RIGHT])
+	{
+		RotateMatrix(&(p->dir), -p->rotSpeed);
+		RotateMatrix(&(p->camera), -p->rotSpeed);
+	}
 }
 
 fVector RotationMatrix(fVector dir, float angle)

@@ -40,6 +40,7 @@ typedef struct player
 	SDL_Color color;
 }Player;
 
+Player InitPlayer(SDL_Color color, iVector startPos, fVector dir, float speed, float rotSpeed);
 void RenderBackground(SDL_Renderer* renderer);
 void SetRenderColor(SDL_Renderer* renderer, SDL_Color color);
 void RenderCell(SDL_Renderer* renderer, int row, int col, SDL_Color border, SDL_Color inner);
@@ -52,6 +53,8 @@ void RenderCamera(SDL_Renderer* renderer, Player* p);
 void HighlightCell(SDL_Renderer* renderer, SDL_FRect cell, SDL_Color inside, SDL_Color border);
 void RenderGridOverlap(SDL_Renderer* renderer, Player* p);
 void DDA(fVector rayDir, Player p, SDL_Renderer* renderer);
+void HandlePlayerMovement(bool* keystate, Player* p);
+void HandleRotation(bool* keystate, Player* p);
 fVector AddVectors(fVector a, fVector b);
 fVector ScaleVector(fVector v, float scale);
 void RotateMatrix(fVector* dir, float angle);

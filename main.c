@@ -42,20 +42,9 @@ int main(void)
 	SDL_Event event;
 
 	iVector startPos = { 1, 1};
+	fVector dir = { 0, 1 };
 	
-	Player p;
-	p.color = WEIRD_BLACK;
-	p.pos.x = (float)startPos.x;
-	p.pos.y = (float)startPos.y;
-
-	p.dir.x = 0;
-	p.dir.y = 1;
-
-	p.speed.x = (float)0.05;
-	p.speed.y = (float)0.05;
-	p.rotSpeed = (float)0.02;
-
-	p.camera = perpVectorClockwise(p.dir);
+	Player p = InitPlayer(WEIRD_BLACK, startPos, dir, 0.05, 0.02);
 
 	//-----------------------
 	//       Main loop
@@ -86,44 +75,8 @@ int main(void)
 		const bool* keystate = SDL_GetKeyboardState(NULL);
 		if (keystate[SDL_SCANCODE_Q])
 			done = true;
-		
-		//movement
-		if (keystate[SDL_SCANCODE_W])
-		{	//refactor with raycasting collision detection and vector sum functions in the future !!!
-			if (worldMap[(int)(p.pos.y + p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += p.dir.y * p.speed.y; }
-			if (worldMap[(int)p.pos.y][(int)(p.pos.x + p.dir.x * p.speed.x)] == 0) { p.pos.x += p.dir.x * p.speed.x; }
-
-		}
-		if (keystate[SDL_SCANCODE_S])
-		{
-			if (worldMap[(int)(p.pos.y - p.dir.y * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y -= p.dir.y * p.speed.y; }
-			if (worldMap[(int)p.pos.y][(int)(p.pos.x - p.dir.x * p.speed.x)] == 0) { p.pos.x -= p.dir.x * p.speed.x; }
-
-		}
-		if (keystate[SDL_SCANCODE_D])
-		{
-			if (worldMap[(int)(p.pos.y - p.dir.x * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y += -p.dir.x * p.speed.y; }
-			if (worldMap[(int)p.pos.y][(int)(p.pos.x - p.dir.y * p.speed.x)] == 0) { p.pos.x += -p.dir.y * p.speed.x; }
-
-		}
-		if (keystate[SDL_SCANCODE_A])
-		{
-			if (worldMap[(int)(p.pos.y + p.dir.x * p.speed.y)][(int)p.pos.x] == 0) { p.pos.y -= -p.dir.x * p.speed.y; }
-			if (worldMap[(int)p.pos.y][(int)(p.pos.x + p.dir.y * p.speed.x)] == 0) { p.pos.x -= -p.dir.y * p.speed.x; }
-
-		}
-
-		//camera rotation
-		if (keystate[SDL_SCANCODE_LEFT])
-		{
-			RotateMatrix(&(p.dir), p.rotSpeed);
-			RotateMatrix(&(p.camera), p.rotSpeed);
-		}
-		if (keystate[SDL_SCANCODE_RIGHT])
-		{
-			RotateMatrix(&(p.dir), -p.rotSpeed);
-			RotateMatrix(&(p.camera), -p.rotSpeed);
-		}
+		HandlePlayerMovement(keystate, &p);
+		HandleRotation(keystate, &p);
 
 		SDL_RenderPresent(renderer);
 	}
