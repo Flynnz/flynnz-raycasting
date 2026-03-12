@@ -281,12 +281,15 @@ void DDA(fVector rayDir, Player p, SDL_Renderer* renderer)
 		rayCell.x = (int)(currCell.x) * mapToScreenX;
 		rayCell.y = (int)(currCell.y) * mapToScreenY;
 
-		HighlightCell(renderer, rayCell, GHOST_GRAY, SAD_GRAY);
+		//only render the ray poiting the same way as the player's direction
+		if (rayDir.x == p.dir.x && rayDir.y == p.dir.y)
+			HighlightCell(renderer, rayCell, GHOST_GRAY, SAD_GRAY);
 
 		if (worldMap[currCell.y][currCell.x] != 0)
 		{
 			hit = true;
-			HighlightCell(renderer, rayCell, FIRE_RED, ROT_GREEN);
+			if (rayDir.x == p.dir.x && rayDir.y == p.dir.y)
+				HighlightCell(renderer, rayCell, FIRE_RED, ROT_GREEN);
 		}
 	}
 

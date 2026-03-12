@@ -44,7 +44,7 @@ int main(void)
 	iVector startPos = { 1, 1};
 	fVector dir = { 0, 1 };
 	
-	Player p = InitPlayer(WEIRD_BLACK, startPos, dir, 0.05, 0.02);
+	Player p = InitPlayer(WEIRD_BLACK, startPos, dir, (float)0.05, (float)0.02);
 
 	//-----------------------
 	//       Main loop
@@ -75,6 +75,7 @@ int main(void)
 		const bool* keystate = SDL_GetKeyboardState(NULL);
 		if (keystate[SDL_SCANCODE_Q])
 			done = true;
+		//TO DO: resolve warning (different 'const' qualifiers)
 		HandlePlayerMovement(keystate, &p);
 		HandleRotation(keystate, &p);
 
