@@ -11,7 +11,7 @@ SDL_Color FREEZE_BLUE = { 20, 50, 150, 255 };
 SDL_Color HOLLOW_PURPLE = { 150, 20, 150, 255 };
 SDL_Color ROT_GREEN = { 15, 130, 20, 255 };
 
-
+fVector MAX_len = { (float)SCREENWIDTH * 100, (float)SCREENHEIGHT * 100 };
 int gridState = showGrid;
 float mapToScreenX = (float)SCREENWIDTH / MAPWIDTH;
 float mapToScreenY = (float)SCREENHEIGHT/ MAPHEIGHT;
@@ -90,12 +90,12 @@ void RenderPlayerBody(SDL_Renderer* renderer, Player* p)
 	SDL_FRect hitbox;
 	hitbox.w = (SCREENWIDTH / MAPWIDTH) / 3;
 	hitbox.h = (SCREENHEIGHT / MAPHEIGHT) / 3;
+
 	//tricks the renderer to start from the center
 	hitbox.x = (float)((p->pos.x) * mapToScreenX - hitbox.w / 2);
 	hitbox.y = (float)((p->pos.y) * mapToScreenY - hitbox.h / 2);
 
 	SetRenderColor(renderer, p->color);
-	//ill implement square rotation in the future
 	SDL_RenderFillRect(renderer, &hitbox);
 }
 
@@ -131,23 +131,21 @@ void RenderLaser(SDL_Renderer* renderer, Player* p)
 	fVector start, end;
 	start.x = p->pos.x * mapToScreenX;
 	start.y = p->pos.y * mapToScreenY;
-	end.x = start.x + p->dir.x * SCREENWIDTH;
-	end.y = start.y + p->dir.y * SCREENHEIGHT;
+	end.x = start.x + p->dir.x * MAX_len.x;
+	end.y = start.y + p->dir.y * MAX_len.x;
 
 	SetRenderColor(renderer, FIRE_RED);
 	SDL_RenderLine(renderer, start.x, start.y, end.x, end.y);
 }
 
-void RenderCamera(SDL_Renderer* renderer, Player* p)
+void RenderCamera(SDL_Renderer* renderer, Player* p, fVector leftmostRay, fVector rightmostRay)
 {
 	//limiting rays
-	fVector leftmostRay, rightmostRay, endLeft, endRight;
+	fVector endLeft, endRight;
 	fVector start = { p->pos.x * mapToScreenX, p->pos.y * mapToScreenY };
-	fVector len = { (float)SCREENWIDTH, (float)SCREENHEIGHT };
-	leftmostRay = ScaleVector(RotationMatrix(p->dir, (float)PI / 6), len.x);
-	endLeft = AddVectors(leftmostRay, start);
-	rightmostRay = ScaleVector(RotationMatrix(p->dir, -(float)PI / 6), len.y);
-	endRight = AddVectors(rightmostRay, start);
+	
+	endLeft = AddVectors(ScaleVector(leftmostRay, MAX_len.x), start);
+	endRight = AddVectors(ScaleVector(rightmostRay, MAX_len.x), start);
 
 	SetRenderColor(renderer, HOLLOW_PURPLE);
 	SDL_RenderLine(renderer, start.x, start.y, endLeft.x, endLeft.y);
@@ -157,8 +155,8 @@ void RenderCamera(SDL_Renderer* renderer, Player* p)
 	fVector dirEnd = AddVectors(p->dir, p->pos);
 	dirEnd.x *= mapToScreenX;
 	dirEnd.y *= mapToScreenY;
-	fVector cameraEnd1 = AddVectors(dirEnd, ScaleVector(p->camera, SCREENWIDTH));
-	fVector cameraEnd2 = AddVectors(dirEnd, ScaleVector(p->camera, -SCREENWIDTH));
+	fVector cameraEnd1 = AddVectors(dirEnd, ScaleVector(p->camera, MAX_len.x));
+	fVector cameraEnd2 = AddVectors(dirEnd, ScaleVector(p->camera, -MAX_len.x));
 
 	SetRenderColor(renderer, ROT_GREEN);
 	SDL_RenderLine(renderer, dirEnd.x, dirEnd.y, cameraEnd1.x, cameraEnd1.y);
@@ -282,17 +280,22 @@ void DDA(fVector rayDir, Player p, SDL_Renderer* renderer)
 		rayCell.y = (int)(currCell.y) * mapToScreenY;
 
 		//only render the ray poiting the same way as the player's direction
-		if (rayDir.x == p.dir.x && rayDir.y == p.dir.y)
+		if (rayDir.x == p.dir.x && rayDir.y == p.dir.y || true)
 			HighlightCell(renderer, rayCell, GHOST_GRAY, SAD_GRAY);
 
 		if (worldMap[currCell.y][currCell.x] != 0)
 		{
 			hit = true;
-			if (rayDir.x == p.dir.x && rayDir.y == p.dir.y)
+			if (rayDir.x == p.dir.x && rayDir.y == p.dir.y || true)
 				HighlightCell(renderer, rayCell, FIRE_RED, ROT_GREEN);
 		}
 	}
+}
 
+fVector DetermineRayDir(float angle, fVector leftmostRay)
+{
+	fVector result = RotationMatrix(leftmostRay, angle);
+	return result;
 }
 
 //Vector operations
@@ -329,3 +332,12 @@ fVector perpVectorCounterClockwise(fVector v)
 	return result;
 }
 
+float Norma(fVector vect)
+{
+	return (float)sqrt(pow(vect.x, 2) + pow(vect.y, 2));
+}
+
+float radians_to_degrees(float radians) 
+{
+	return radians * (180.0f / PI);
+}

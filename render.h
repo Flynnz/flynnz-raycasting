@@ -17,6 +17,11 @@ extern SDL_Color SAD_GRAY;
 extern SDL_Color LIGHT_GRAY;
 extern SDL_Color COOL_ORANGE;
 extern SDL_Color WEIRD_BLACK;
+extern SDL_Color FIRE_RED;
+extern SDL_Color FREEZE_BLUE;
+extern SDL_Color HOLLOW_PURPLE;
+extern SDL_Color ROT_GREEN;
+
 
 extern int gridState;
 
@@ -31,6 +36,8 @@ typedef struct vector2
 {
 	float x, y;
 }fVector;
+
+extern fVector MAX_len;
 
 typedef struct player
 {
@@ -49,17 +56,20 @@ void RenderPlayer(SDL_Renderer* renderer, Player* p);
 void RenderPlayerBody(SDL_Renderer* renderer, Player* p);
 void RenderDirection(SDL_Renderer* renderer, Player* p);
 void RenderLaser(SDL_Renderer* renderer, Player* p);
-void RenderCamera(SDL_Renderer* renderer, Player* p);
+void RenderCamera(SDL_Renderer* renderer, Player* p, fVector leftmostRay, fVector rightmostRay);
 void HighlightCell(SDL_Renderer* renderer, SDL_FRect cell, SDL_Color inside, SDL_Color border);
 void RenderGridOverlap(SDL_Renderer* renderer, Player* p);
 void DDA(fVector rayDir, Player p, SDL_Renderer* renderer);
 void HandlePlayerMovement(bool* keystate, Player* p);
 void HandleRotation(bool* keystate, Player* p);
+fVector DetermineRayDir(float angle, fVector leftmostRay);
 fVector AddVectors(fVector a, fVector b);
 fVector ScaleVector(fVector v, float scale);
 void RotateMatrix(fVector* dir, float angle);
 fVector RotationMatrix(fVector dir, float angle);
 fVector perpVectorClockwise(fVector v);
 fVector perpVectorCounterClockwise(fVector v);
+float Norma(fVector vect);
+float radians_to_degrees(float radians);
 
 #endif 
