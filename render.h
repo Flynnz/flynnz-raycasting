@@ -1,11 +1,12 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#define SCREENWIDTH 900
-#define SCREENHEIGHT 900
+#define SCREENWIDTH 1920
+#define SCREENHEIGHT 1080
 #define MAPWIDTH 24
 #define MAPHEIGHT 24
 #include "SDL3/SDL.h"
+#include <stdio.h>
 
 typedef enum
 {
@@ -86,6 +87,9 @@ float ShootRay(SDL_Renderer* renderer, fVector rayDir, Player p, float* distX, f
 void HandlePlayerMovement(const bool* keystate, Player* p);
 void HandleRotation(const bool* keystate, Player* p, Camera* cam);
 fVector DetermineRayDir(float angle, fVector leftmostRay);
+void CountFPS(SDL_Renderer* renderer, Uint64 fpsLastTime, int fpsFrames, float fps, char fpsText[]);
+void SetScaleAndOffset(fVector* mapStartPos, fVector* mapToScreenRatio);
+
 fVector AddVectors(fVector a, fVector b);
 fVector ScaleVector(fVector v, float scale);
 void RotateMatrix(fVector* dir, float angle);

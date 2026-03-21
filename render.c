@@ -1,6 +1,5 @@
-#include <stdio.h>
-
 #include "render.h"
+
 #define PI 3.14159265
 
 SDL_Color SAD_GRAY = { 85, 85, 90, 255 };
@@ -93,8 +92,8 @@ void RenderCell(SDL_Renderer* renderer, int row, int col, fVector startPos, fVec
 
 void RenderPlayer(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset)
 {
-	RenderDirection(renderer, p, ratio, offset);
 	RenderPlayerBody(renderer, p, ratio, offset);
+	RenderDirection(renderer, p, ratio, offset);
 }
 
 void RenderPlayerBody(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset)
@@ -144,8 +143,10 @@ void RenderLaser(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offse
 	fVector start, end;
 	start.x = p->pos.x * ratio.x + offset.x;
 	start.y = p->pos.y * ratio.y + offset.y;
-	end.x = start.x + p->dir.x * MAX_len.x;
-	end.y = start.y + p->dir.y * MAX_len.x;
+	end.x = p->dir.x * MAX_len.x;
+	end.y = p->dir.y * MAX_len.y;
+
+	end = AddVectors(end, start);
 
 	SetRenderColor(renderer, FIRE_ORANGE);
 	SDL_RenderLine(renderer, start.x, start.y, end.x, end.y);
@@ -156,9 +157,14 @@ void RenderCamera(SDL_Renderer* renderer, Player* p, Camera cam, fVector ratio, 
 	//limiting rays
 	fVector endLeft, endRight;
 	fVector start = { p->pos.x * ratio.x + offset.x, p->pos.y * ratio.y + offset.y };
-	
-	endLeft = ScaleVector(cam.leftmostRay, MAX_len.x);
-	endRight = ScaleVector(cam.rightmostRay, MAX_len.x);
+
+	endLeft.x = cam.leftmostRay.x * MAX_len.x;
+	endLeft.y = cam.leftmostRay.y * MAX_len.y;
+	endRight.x = cam.rightmostRay.x * MAX_len.x;
+	endRight.y = cam.rightmostRay.y * MAX_len.y;
+
+	endLeft = AddVectors(endLeft, start);
+	endRight = AddVectors(endRight, start);
 
 	SetRenderColor(renderer, HOLLOW_PURPLE);
 	SDL_RenderLine(renderer, start.x, start.y, endLeft.x, endLeft.y);
@@ -323,6 +329,40 @@ fVector DetermineRayDir(float angle, fVector leftmostRay)
 {
 	fVector result = RotationMatrix(leftmostRay, angle);
 	return result;
+}
+
+void CountFPS(SDL_Renderer* renderer, Uint64 fpsLastTime, int fpsFrames, float fps, char fpsText[])
+{
+	Uint64 now = SDL_GetTicks();
+	Uint64 elapsed = now - fpsLastTime;
+
+	if (elapsed >= 500)                       // update every 500 ms
+	{
+		fps = fpsFrames / (elapsed / 1000.0f);
+		fpsFrames = 0;
+		fpsLastTime = now;
+	}
+	snprintf(fpsText, 32, "FPS: %.1f", fps);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);   // yellow
+	SDL_RenderDebugText(renderer, 4, 4, fpsText);
+}
+
+void SetScaleAndOffset(fVector* mapStartPos, fVector* mapToScreenRatio)
+{
+	if (renderState == twoD)
+	{
+		mapStartPos->x = 0;
+		mapStartPos->y = 0;
+		mapToScreenRatio->x = mapToScreenX;
+		mapToScreenRatio->y = mapToScreenY;
+	}
+	else
+	{
+		mapStartPos->x = (int)SCREENWIDTH / 24;
+		mapStartPos->y = (int)SCREENHEIGHT / 24;
+		mapToScreenRatio->x = mapToScreenX / 4;
+		mapToScreenRatio->y = mapToScreenY / 4;
+	}
 }
 
 //Vector operations
