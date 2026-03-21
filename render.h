@@ -13,16 +13,30 @@ typedef enum
 	showGrid
 }GRID_STATE;
 
+typedef enum
+{
+	twoD,
+	threeD
+}RENDER_STATE;
+
+typedef enum
+{
+	NS,
+	EW
+}WallSide;
+
 extern SDL_Color SAD_GRAY;
 extern SDL_Color LIGHT_GRAY;
-extern SDL_Color COOL_ORANGE;
 extern SDL_Color WEIRD_BLACK;
-extern SDL_Color FIRE_RED;
+extern SDL_Color FIRE_ORANGE;
+extern SDL_Color COAL_ORANGE;
 extern SDL_Color FREEZE_BLUE;
 extern SDL_Color HOLLOW_PURPLE;
 extern SDL_Color ROT_GREEN;
 
-
+extern float mapToScreenX;
+extern float mapToScreenY;
+extern int renderState;
 extern int gridState;
 
 extern int worldMap[MAPWIDTH][MAPHEIGHT];
@@ -39,29 +53,38 @@ typedef struct vector2
 
 extern fVector MAX_len;
 
+typedef struct camera
+{
+	fVector dir, leftmostRay, rightmostRay;
+	float angle;
+}Camera;
+
 typedef struct player
 {
-	fVector pos, dir, camera;
+	fVector pos, dir;
 	fVector speed;
 	float rotSpeed;
 	SDL_Color color;
 }Player;
 
 Player InitPlayer(SDL_Color color, iVector startPos, fVector dir, float speed, float rotSpeed);
+Camera InitCamera(Player p, float angle);
 void RenderBackground(SDL_Renderer* renderer);
 void SetRenderColor(SDL_Renderer* renderer, SDL_Color color);
-void RenderCell(SDL_Renderer* renderer, int row, int col, SDL_Color border, SDL_Color inner);
-void RenderMap(SDL_Renderer* renderer);
-void RenderPlayer(SDL_Renderer* renderer, Player* p);
-void RenderPlayerBody(SDL_Renderer* renderer, Player* p);
-void RenderDirection(SDL_Renderer* renderer, Player* p);
-void RenderLaser(SDL_Renderer* renderer, Player* p);
-void RenderCamera(SDL_Renderer* renderer, Player* p, fVector leftmostRay, fVector rightmostRay);
+void RenderCell(SDL_Renderer* renderer, int row, int col, fVector startPos, fVector ratio, SDL_Color border, SDL_Color inner);
+void RenderMap(SDL_Renderer* renderer, fVector startPos, fVector ratio);
+void RenderPlayer(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset);
+void RenderPlayerBody(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset);
+void RenderDirection(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset);
+void RenderLaser(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset);
+void RenderCamera(SDL_Renderer* renderer, Player* p, Camera cam, fVector ratio, fVector offset);
 void HighlightCell(SDL_Renderer* renderer, SDL_FRect cell, SDL_Color inside, SDL_Color border);
-void RenderGridOverlap(SDL_Renderer* renderer, Player* p);
-void DDA(fVector rayDir, Player p, SDL_Renderer* renderer);
-void HandlePlayerMovement(bool* keystate, Player* p);
-void HandleRotation(bool* keystate, Player* p);
+void RenderGridOverlap(SDL_Renderer* renderer, Player* p, fVector ratio, fVector offset);
+float DDA(fVector rayDir, Player p, SDL_Renderer* renderer, int* wallSide, fVector ratio, fVector offset);
+float ShootRay(SDL_Renderer* renderer, fVector rayDir, Player p, float* distX, float* distY, 
+				int* sideHit, float deltaX, float deltaY, iVector currCell, fVector ratio, fVector offset);
+void HandlePlayerMovement(const bool* keystate, Player* p);
+void HandleRotation(const bool* keystate, Player* p, Camera* cam);
 fVector DetermineRayDir(float angle, fVector leftmostRay);
 fVector AddVectors(fVector a, fVector b);
 fVector ScaleVector(fVector v, float scale);
@@ -70,6 +93,5 @@ fVector RotationMatrix(fVector dir, float angle);
 fVector perpVectorClockwise(fVector v);
 fVector perpVectorCounterClockwise(fVector v);
 float Norma(fVector vect);
-float radians_to_degrees(float radians);
 
 #endif 
