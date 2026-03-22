@@ -6,11 +6,18 @@ SDL_Color SAD_GRAY = { 85, 85, 90, 255 };
 SDL_Color GHOST_GRAY = { 110, 110, 110, 55 };
 SDL_Color LIGHT_GRAY = { 95, 95, 95, 255 };
 SDL_Color WEIRD_BLACK = { 20, 30, 20, 255 };
+
 SDL_Color FIRE_ORANGE = { 150, 50, 20, 255 };
 SDL_Color COAL_ORANGE = { 180, 50, 30, 255 };
-SDL_Color FREEZE_BLUE = { 20, 50, 150, 255 };
-SDL_Color HOLLOW_PURPLE = { 150, 20, 150, 205 };
-SDL_Color ROT_GREEN = { 15, 120, 20, 215 };
+
+SDL_Color FREEZE_BLUE = { 40, 50, 170, 255 };
+SDL_Color LAPSE_BLUE = { 20, 50, 150, 255 };
+
+SDL_Color HOLLOW_PURPLE = { 115, 20, 125, 205 };
+SDL_Color THANOS_PURPLE = { 95, 25, 75, 205 };
+
+SDL_Color GARDEN_GREEN = { 15, 100, 20, 215 };
+SDL_Color ROT_GREEN = { 20, 80, 10, 215 };
 
 fVector MAX_len = { (float)SCREENWIDTH * 100, (float)SCREENHEIGHT * 100 };
 int gridState = showGrid;
@@ -33,6 +40,12 @@ Player InitPlayer(SDL_Color color, iVector startPos, fVector dir, float speed, f
 	p.rotSpeed = rotSpeed;
 
 	return p;
+}
+
+void UpdatePlayerSpeed(Player* p, float speed)
+{
+	p->speed.x = speed;
+	p->speed.y = speed;
 }
 
 Camera InitCamera(Player p, float angle)
@@ -126,7 +139,7 @@ void RenderDirection(SDL_Renderer* renderer, Player* p, fVector ratio, fVector o
 	fVector tipEnd1 = AddVectors(end, tipVector);
 	fVector tipEnd2 = AddVectors(end, perpVectorCounterClockwise(tipVector));
 
-	SetRenderColor(renderer, FREEZE_BLUE);
+	SetRenderColor(renderer, LAPSE_BLUE);
 
 	//arrow body
 	SDL_RenderLine(renderer, start.x, start.y, end.x, end.y);
@@ -178,7 +191,7 @@ void RenderCamera(SDL_Renderer* renderer, Player* p, Camera cam, fVector ratio, 
 	fVector cameraEnd1 = AddVectors(dirEnd, ScaleVector(cam.dir, MAX_len.x));
 	fVector cameraEnd2 = AddVectors(dirEnd, ScaleVector(cam.dir, -MAX_len.x));
 
-	SetRenderColor(renderer, ROT_GREEN);
+	SetRenderColor(renderer, GARDEN_GREEN);
 	SDL_RenderLine(renderer, dirEnd.x + offset.x, dirEnd.y + offset.y, cameraEnd1.x, cameraEnd1.y);
 	SDL_RenderLine(renderer, dirEnd.x + offset.x, dirEnd.y + offset.y, cameraEnd2.x, cameraEnd2.y);
 }
@@ -199,7 +212,7 @@ void RenderGridOverlap(SDL_Renderer *renderer, Player *p, fVector ratio, fVector
 	playerCell.h = ratio.y;
 	playerCell.x = (int)(p->pos.x) * ratio.x + offset.x;
 	playerCell.y = (int)(p->pos.y) * ratio.y + offset.y;
-	HighlightCell(renderer, playerCell, ROT_GREEN, SAD_GRAY);
+	HighlightCell(renderer, playerCell, GARDEN_GREEN, SAD_GRAY);
 
 	//laser (DDA)
 	int wallSide; //not used here
@@ -233,13 +246,13 @@ void HandleRotation(const bool* keystate, Player* p, Camera* cam)
 {
 	if (keystate[SDL_SCANCODE_LEFT])
 	{
-		RotateMatrix(&(p->dir), p->rotSpeed);
-		RotateMatrix(&(cam->dir), p->rotSpeed);
+		RotateMatrix(&(p->dir), -p->rotSpeed);
+		RotateMatrix(&(cam->dir), -p->rotSpeed);
 	}
 	if (keystate[SDL_SCANCODE_RIGHT])
 	{
-		RotateMatrix(&(p->dir), -p->rotSpeed);
-		RotateMatrix(&(cam->dir), -p->rotSpeed);
+		RotateMatrix(&(p->dir), p->rotSpeed);
+		RotateMatrix(&(cam->dir), p->rotSpeed);
 	}
 	//update camera
 	cam->leftmostRay = RotationMatrix(p->dir, cam->angle / 2.0f);
@@ -312,7 +325,7 @@ float ShootRay(SDL_Renderer* renderer, fVector rayDir, Player p, float* distX, f
 		{
 			hit = true;
 			if (rayDir.x == p.dir.x && rayDir.y == p.dir.y)
-				HighlightCell(renderer, rayCell, FIRE_ORANGE, ROT_GREEN);
+				HighlightCell(renderer, rayCell, FIRE_ORANGE, GARDEN_GREEN);
 		}
 	}
 
@@ -397,9 +410,4 @@ fVector perpVectorCounterClockwise(fVector v)
 	result.x = v.y;
 	result.y = -v.x;
 	return result;
-}
-
-float Norma(fVector vect)
-{
-	return (float)sqrt(pow(vect.x, 2) + pow(vect.y, 2));
 }

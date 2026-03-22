@@ -4,37 +4,39 @@
 
 int worldMap[MAPWIDTH][MAPHEIGHT] =
 {
-  {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5,5,5,5,5,5,5,5},
-  {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,5},
-  {3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5},
-  {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5},
-  {3,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,5},
-  {3,0,0,0,0,0,0,6,6,6,6,6,6,6,6,6,5,5,0,5,5,5,5,5},
-  {3,0,0,0,0,0,0,6,0,0,0,6,0,0,0,6,5,0,0,0,5,5,5,2},
-  {3,0,0,0,0,0,0,6,0,0,0,0,0,0,0,6,5,0,0,0,0,0,0,7},
-  {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,5,2},
-  {3,0,0,0,0,0,0,6,0,0,0,0,0,0,0,6,5,0,0,0,0,0,0,7},
-  {3,0,0,0,0,0,0,6,0,0,0,0,0,0,0,6,5,0,0,0,5,5,5,2},
-  {3,0,0,0,0,0,0,6,6,6,6,0,6,6,6,6,5,5,5,5,5,5,5,2},
-  {7,7,7,7,7,7,7,7,7,7,7,0,7,7,7,7,7,7,7,7,7,7,7,7},
-  {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
-  {7,7,7,7,7,7,0,7,7,7,7,0,7,7,7,7,7,7,7,7,7,7,7,7},
-  {3,3,3,3,3,3,0,3,3,3,7,0,7,1,1,1,1,1,1,1,4,4,4,4},
-  {3,0,0,0,0,0,0,0,0,3,7,0,7,1,0,0,0,0,0,1,0,0,0,1},
-  {3,0,0,0,0,0,0,0,0,0,0,0,7,1,0,0,0,0,0,1,0,0,0,1},
-  {3,0,0,0,0,0,0,0,0,3,7,0,7,1,0,0,0,0,0,1,1,0,1,1},
-  {3,0,0,0,7,0,0,0,0,3,7,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {3,0,0,0,0,0,0,0,0,3,7,0,7,1,0,0,0,0,0,1,1,0,1,1},
-  {3,0,0,0,7,0,0,0,0,3,7,0,7,1,0,0,0,0,0,1,0,0,0,1},
-  {3,0,0,0,0,0,0,0,0,3,7,0,7,1,0,0,0,0,0,1,0,0,0,1},
-  {3,3,3,3,3,3,3,3,3,3,2,2,2,1,1,1,1,1,1,4,4,4,4,4}
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+  {1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
+  {1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,1,1,0,1,1,1,1,1},
+  {1,0,0,0,0,0,0,3,0,0,0,3,0,0,0,3,1,0,0,0,1,1,1,1},
+  {1,0,0,0,0,0,0,3,0,0,0,0,0,0,0,3,1,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1},
+  {1,0,0,0,0,0,0,3,0,0,0,0,0,0,0,3,1,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,3,0,0,0,0,0,0,0,3,1,0,0,0,1,1,1,1},
+  {1,0,0,0,0,0,0,3,3,3,3,0,3,3,3,3,1,1,1,1,1,1,1,1},
+  {2,2,0,2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2,2,2,2,2,2},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {2,2,0,2,2,2,0,2,2,2,2,0,2,2,2,2,2,2,2,2,2,2,2,2},
+  {1,1,1,1,1,1,0,1,1,1,2,0,2,1,1,1,1,1,1,1,1,1,1,1},
+  {1,0,0,0,0,0,0,0,0,1,2,0,2,1,0,0,0,0,0,1,0,0,0,1},
+  {1,0,0,0,2,0,0,0,0,0,0,0,2,1,0,0,0,0,0,1,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,1,2,0,2,1,0,0,0,0,0,1,1,0,1,1},
+  {1,0,0,0,2,0,0,0,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,1,2,0,2,1,0,0,0,0,0,1,1,0,1,1},
+  {1,0,0,0,2,0,0,0,0,1,2,0,2,1,0,0,0,0,0,1,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,1,2,0,2,1,0,0,0,0,0,1,0,0,0,1},
+  {1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
 const iVector startPos = { 4, 4 };
 const fVector startDir = { 0, 1 };
-const float moveSpeed = 0.05f;
 const float rotateSpeed = 0.02f;
-const float cameraSpan = (float)PI / 3.5f;		//angle
+float moveSpeed = 0.025f;
+
+const float FOV = 160;
+const float angleProgression = 0.0001f;
 
 int main(void)
 {
@@ -46,6 +48,7 @@ int main(void)
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
 	SDL_SetRenderVSync(renderer, 1);
 	SDL_Event event;
+	const float cameraSpan = (float)atan(FOV/100.0f);		//angle
 
 	Player p = InitPlayer(WEIRD_BLACK, startPos, startDir, moveSpeed, rotateSpeed);
 	//TOFIX: implement customizable camera plane distance
@@ -71,7 +74,7 @@ int main(void)
 
 	// ── DDA ───────────────────────────────────────────────────────
 		//TODO: more refactoring
-		for (float x = 0; x < cam.angle; x += 0.0001f)
+		for (float x = 0; x < cam.angle; x += angleProgression)
 		{
 			fVector DDAdir = DetermineRayDir(x, cam.rightmostRay);
 
@@ -101,7 +104,7 @@ int main(void)
 		}
 	// ──────────────────────────────────────────────────────────────
 
-		
+
 	// ── Render 2D ─────────────────────────────────────────────────
 
 		RenderMap(renderer, mapStartPos, mapToScreenRatio);
@@ -121,19 +124,47 @@ int main(void)
 	
 	// ── Event inputs ──────────────────────────────────────────────
 		SDL_PollEvent(&event);
+		float actualSpeed = moveSpeed;
+
 		if (event.type == SDL_EVENT_QUIT)
 			done = true;
 		if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_G)
 			gridState = (gridState == noGrid) ? showGrid : noGrid;
-		if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_M)
+		if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_TAB)
 			renderState = (renderState == twoD) ? threeD : twoD;
 	// ──────────────────────────────────────────────────────────────
 
 
 	// ── Keystate inputs ───────────────────────────────────────────
 		const bool* keystate = SDL_GetKeyboardState(NULL);
-		if (keystate[SDL_SCANCODE_Q])
+		if (keystate[SDL_SCANCODE_ESCAPE])
 			done = true;
+		if (keystate[SDL_SCANCODE_LCTRL])
+			actualSpeed = moveSpeed * 2;
+		else
+			actualSpeed = moveSpeed;
+	// ──────────────────────────────────────────────────────────────
+
+
+	// ── Display info ──────────────────────────────────────────────
+		char instructions[64], coords[24], viewState[24], gridONOFF[24];
+		snprintf(instructions, 64, "-quit: ESC  -run: CTRL  -switch view: TAB  -grid ON/OFF: G");
+		SDL_SetRenderDrawColor(renderer, 175, 175, 175, 255); //gray
+		SDL_RenderDebugText(renderer, SCREENWIDTH - 485, SCREENHEIGHT - 16, instructions);
+
+		snprintf(coords, 24, "x:%.1f y:%.1f", p.pos.x, p.pos.y);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); //yellow
+		SDL_RenderDebugText(renderer, 100 , 4 , coords);
+
+		snprintf(viewState, 24, "view:%d", renderState);
+		SDL_RenderDebugText(renderer, 210 , 4 , viewState);
+		
+		if (gridState == noGrid)
+			snprintf(gridONOFF, 24, "grid:OFF");
+		else
+			snprintf(gridONOFF, 24, "grid:ON");
+		SDL_RenderDebugText(renderer, 280 , 4 , gridONOFF);
+
 	// ──────────────────────────────────────────────────────────────
 
 
@@ -141,18 +172,20 @@ int main(void)
 		SetScaleAndOffset(&mapStartPos, &mapToScreenRatio);
 		HandlePlayerMovement(keystate, &p);
 		HandleRotation(keystate, &p, &cam);
+		UpdatePlayerSpeed(&p, actualSpeed),
 	// ── FPS calculation ─────────────────────────────────────────
 		fpsFrames++;
 		CountFPS(renderer, fpsLastTime, fpsFrames, fps, fpsText);
-	// ──────────────────────────────────────────────────────────────
 
 		if (renderState == threeD)
 			SetRenderColor(renderer, LIGHT_GRAY);
+	// ──────────────────────────────────────────────────────────────
 		SDL_RenderPresent(renderer);
 	}
 
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
+
 	return 0;
 }

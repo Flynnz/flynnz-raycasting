@@ -1,8 +1,8 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#define SCREENWIDTH 1920
-#define SCREENHEIGHT 1080
+#define SCREENWIDTH 1280
+#define SCREENHEIGHT 980
 #define MAPWIDTH 24
 #define MAPHEIGHT 24
 #include "SDL3/SDL.h"
@@ -31,9 +31,9 @@ extern SDL_Color LIGHT_GRAY;
 extern SDL_Color WEIRD_BLACK;
 extern SDL_Color FIRE_ORANGE;
 extern SDL_Color COAL_ORANGE;
-extern SDL_Color FREEZE_BLUE;
+extern SDL_Color LAPSE_BLUE;
 extern SDL_Color HOLLOW_PURPLE;
-extern SDL_Color ROT_GREEN;
+extern SDL_Color GARDEN_GREEN;
 
 extern float mapToScreenX;
 extern float mapToScreenY;
@@ -69,6 +69,7 @@ typedef struct player
 }Player;
 
 Player InitPlayer(SDL_Color color, iVector startPos, fVector dir, float speed, float rotSpeed);
+void UpdatePlayerSpeed(Player* p, float speed);
 Camera InitCamera(Player p, float angle);
 void RenderBackground(SDL_Renderer* renderer);
 void SetRenderColor(SDL_Renderer* renderer, SDL_Color color);
@@ -96,6 +97,5 @@ void RotateMatrix(fVector* dir, float angle);
 fVector RotationMatrix(fVector dir, float angle);
 fVector perpVectorClockwise(fVector v);
 fVector perpVectorCounterClockwise(fVector v);
-float Norma(fVector vect);
 
 #endif 
