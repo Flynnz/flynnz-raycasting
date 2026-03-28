@@ -1,7 +1,7 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#define SCREENWIDTH 1280
+#define SCREENWIDTH 1080
 #define SCREENHEIGHT 980
 #define MAPWIDTH 24
 #define MAPHEIGHT 24

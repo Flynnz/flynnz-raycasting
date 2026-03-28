@@ -57,7 +57,7 @@ int main(void)
 	SetScaleAndOffset(&mapStartPos, &mapToScreenRatio);
 
 	//─────────────────────────────────────────────────────────
-	//fps counter setup (I let Claude handle this part)
+	//		fps counter setup
 	//─────────────────────────────────────────────────────────
 	Uint64 fpsLastTime = SDL_GetTicks();
 	int    fpsFrames = 0;
