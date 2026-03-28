@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="raycasting_custom.vcxproj" Id="49fa889c-7603-4742-854f-b801d1a1ad48" />
+</Solution>
