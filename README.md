@@ -3,7 +3,7 @@ My custom implementation of raycasting following Lode's raycasting tutorial.
 
 **ESC**: quit  
 **TAB**: switch view  
-**G**: toggle ON/OFF grid on 2D map
+**G**: toggle ON/OFF grid on 2D map  
 **LCTRL**: run faster
 
 ## 2D view from above
